@@ -1,5 +1,5 @@
 #include "Arduino.h"
-<<<<<<< HEAD
+
 #define LED_YELLOW 3
 #define LED_RED 4
 #define LED_GREEN 5
@@ -34,15 +34,4 @@ void loop(){
     ledNow = h;
     blink(ledNow,50);
   }
-
-
-=======
-
-void setup(){
-
-}
-
-void loop(){
-  
->>>>>>> 181debe18a47d8102a73b0d6e9cdc47b40394fbd
 }
