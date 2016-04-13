@@ -5,12 +5,13 @@
 #define LED_GREEN 5
 #define LED_WHITE 6
 
+int leds[4]={LED_YELLOW,LED_RED,LED_GREEN,LED_WHITE};
 
-int ledNow;
+// int ledNow;
 
 void blink(int led, int delayy){
-  digitalWrite(led,HIGH);
   Serial.println(led);
+  digitalWrite(led,HIGH);
   delay(delayy);
   digitalWrite(led,LOW);
   delay(delayy);
@@ -23,15 +24,14 @@ void setup(){
   pinMode(LED_YELLOW, OUTPUT);
   pinMode(LED_WHITE, OUTPUT);
 }
-
 void loop(){
   for(int i =4 ; i<7;i++){
-    ledNow = i;
-    blink(ledNow,200);
+    // Serial.println(i);
+    blink(i,500);
 
   }
   for(int h = 5 ; h>2;h--){
-    ledNow = h;
-    blink(ledNow,50);
+    // Serial.println(h);
+    blink(h,500);
   }
 }
