@@ -25,13 +25,13 @@ void setup(){
   pinMode(LED_WHITE, OUTPUT);
 }
 void loop(){
-  for(int i =4 ; i<7;i++){
+  for(int i =1 ; i<4;i++){
     // Serial.println(i);
-    blink(i,500);
+    blink(leds[i],200);
 
   }
-  for(int h = 5 ; h>2;h--){
+  for(int h = 2 ; h>-1;h--){
     // Serial.println(h);
-    blink(h,500);
+    blink(leds[h],200);
   }
 }
