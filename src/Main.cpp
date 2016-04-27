@@ -4,13 +4,23 @@
 #define LED_RED 4
 #define LED_GREEN 5
 #define LED_WHITE 6
-#define HALF_MINUTE 500;
+#define HALF_MINUTE 500
+
+#define BOTTON_YELLOW 10
+#define BOTTON_RED  11
+#define BOTTON_GREEN  12
+#define BOTTON_WHITE  13
 
 int leds[4]={LED_YELLOW,LED_RED,LED_GREEN,LED_WHITE};
-int *sequence;
-int sizeSequence;
+int *sequenceLeds;
+int sizeSequenceLeds;
+
+int bottons[4] = {BOTTON_YELLOW,BOTTON_RED,BOTTON_GREEN,BOTTON_WHITE};
 
 // int ledNow;
+void readBottonSequence(){
+  
+}
 
 void blink(int led, int delayy){
   Serial.println(led);
@@ -20,52 +30,60 @@ void blink(int led, int delayy){
   delay(delayy);
 }
 
-void acendeTodos(int leds[], int delayy){
+void turnOnAll(int leds[], int delayy){
 
   for(int i =0;i<4;i++){
     digitalWrite(leds[i],HIGH);
   }
   delay(delayy);
 }
-void apagaTodos(int leds[], int delayy){
+void turnOffAll(int leds[], int delayy){
   for(int i =0;i<4;i++){
     digitalWrite(leds[i],LOW);
   }
   delay(delayy);
 }
-void iniciaPortasSaidas(int leds[]){
+void startExitPorts(int leds[]){
   for(int i;i<4;i++){
     pinMode(leds[i], OUTPUT);
   }
 }
+void startEnterPorts(int botton[]){
+  for(int i = 10;i<14;i++){
+    pinMode(botton[i], INPUT_PULLUP);
+  }
+}
 
 void iniciarJogoGenius(){
-  iniciaPortasSaidas(leds);
-  sizeSequence =0;
-  int sTepm[sizeSequence];
-  sequence = sTepm;
+  startExitPorts(leds);
+  startEnterPorts(bottons);
+  sizeSequenceLeds =0;
+  int sTepm[sizeSequenceLeds];
+  sequenceLeds = sTepm;
 
 }
-void aumentaSequencia(int novoLed){
-  int seqTemp[sizeSequence+1];
-  for(int i = 0 ; i<sizeSequence+1;i++){
-    if(i==sizeSequence){
+void increaseSequence(int novoLed){
+  int seqTemp[sizeSequenceLeds+1];
+  for(int i = 0 ; i<sizeSequenceLeds+1;i++){
+    if(i==sizeSequenceLeds){
       seqTemp[i] = novoLed;
-      sequence = seqTemp;
+      sequenceLeds = seqTemp;
     }else{
-      seqTemp[i] = sequence[i];
+      seqTemp[i] = sequenceLeds[i];
     }
   }
-  sizeSequence++;
+  sizeSequenceLeds++;
 }
 void blinkSequence(int *seq,int sizeSeq){
-//TODO finish this method
+  for(int i=0; i<sizeSeq;i++){
+    blink(seq[i], HALF_MINUTE);
+  }
 }
 void errouSequencia(){
-  acendeTodos(leds, 2000);
+  turnOnAll(leds, 2000);
   int seqTemp[0];
-  sequence = seqTemp;
-  sizeSequence = 0;
+  sequenceLeds = seqTemp;
+  sizeSequenceLeds = 0;
 }
 void setup(){
   Serial.begin(9600);
@@ -73,5 +91,7 @@ void setup(){
 }
 void loop(){
   int led = random(0,3);
-  aumentaSequencia(leds[led]);
+  increaseSequence(leds[led]);
+  blinkSequence(sequenceLeds, sizeSequenceLeds);
+  readBottonSequence();
 }
