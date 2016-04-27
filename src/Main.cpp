@@ -11,87 +11,105 @@
 #define BOTTON_GREEN  12
 #define BOTTON_WHITE  13
 
-int leds[4]={LED_YELLOW,LED_RED,LED_GREEN,LED_WHITE};
-int *sequenceLeds;
+int ledsAndButtons[4][2]={{LED_YELLOW,BOTTON_YELLOW},{LED_RED,BOTTON_RED},{LED_GREEN,BOTTON_GREEN},{LED_WHITE,BOTTON_WHITE}};
 int sizeSequenceLeds;
+int (*sequenceLeds)[2];
+
 
 int bottons[4] = {BOTTON_YELLOW,BOTTON_RED,BOTTON_GREEN,BOTTON_WHITE};
 
 // int ledNow;
 void readBottonSequence(){
-  
+
 }
 
 void blink(int led, int delayy){
-  Serial.println(led);
+  Serial.println("lighting led ");
+  Serial.println(led );
   digitalWrite(led,HIGH);
   delay(delayy);
   digitalWrite(led,LOW);
   delay(delayy);
 }
 
-void turnOnAll(int leds[], int delayy){
-
+void turnOnAll(int leds[][2], int delayy){
   for(int i =0;i<4;i++){
-    digitalWrite(leds[i],HIGH);
+    digitalWrite(leds[i][0],HIGH);
   }
   delay(delayy);
 }
-void turnOffAll(int leds[], int delayy){
+void turnOffAll(int leds[][2], int delayy){
   for(int i =0;i<4;i++){
-    digitalWrite(leds[i],LOW);
+    digitalWrite(leds[i][0],LOW);
   }
   delay(delayy);
 }
-void startExitPorts(int leds[]){
+void startExitPorts(int leds[4][2]){
   for(int i;i<4;i++){
-    pinMode(leds[i], OUTPUT);
+    Serial.println("Starting exit ");
+    Serial.println(leds[i][0]);
+    pinMode(leds[i][0], OUTPUT);
   }
 }
-void startEnterPorts(int botton[]){
-  for(int i = 10;i<14;i++){
-    pinMode(botton[i], INPUT_PULLUP);
+void startEntrancePorts(int botton[4][2]){
+  for(int i = 0;i<4;i++){
+    Serial.println("Starting entrance");
+    Serial.println(botton[i][1]);
+    pinMode(botton[i][1], INPUT_PULLUP);
   }
 }
 
-void iniciarJogoGenius(){
-  startExitPorts(leds);
-  startEnterPorts(bottons);
+void startGeniusGame(){
+  Serial.println("Starting exit ports");
+  startExitPorts(ledsAndButtons);
+  Serial.println("Starting Enter ports");
+  startEntrancePorts(ledsAndButtons);
   sizeSequenceLeds =0;
-  int sTepm[sizeSequenceLeds];
-  sequenceLeds = sTepm;
 
 }
-void increaseSequence(int novoLed){
-  int seqTemp[sizeSequenceLeds+1];
-  for(int i = 0 ; i<sizeSequenceLeds+1;i++){
+void increaseSequence(int novoLedButton[1][2]){
+  Serial.println("Creating new Array of sequence leds");
+  int seqTemp[sizeSequenceLeds+1][2];
+  for(int i = 0 ; i<=sizeSequenceLeds;i++){
     if(i==sizeSequenceLeds){
-      seqTemp[i] = novoLed;
+      Serial.println("Adding to the new sequence the led ");
+      Serial.println(novoLedButton[0][0]);
+      seqTemp[i][0] = novoLedButton[0][0];
+      seqTemp[i][1] = novoLedButton[0][1];
       sequenceLeds = seqTemp;
     }else{
-      seqTemp[i] = sequenceLeds[i];
+      Serial.println("Adding to the new sequence the led ");
+      Serial.println(sequenceLeds[i][0]);
+      seqTemp[i][0] = sequenceLeds[i][0];
+      seqTemp[i][1] = sequenceLeds[i][1];
     }
   }
   sizeSequenceLeds++;
 }
-void blinkSequence(int *seq,int sizeSeq){
+void blinkSequence(int (*seq)[2],int sizeSeq){
   for(int i=0; i<sizeSeq;i++){
-    blink(seq[i], HALF_MINUTE);
+    blink(seq[i][0], HALF_MINUTE);
   }
 }
 void errouSequencia(){
-  turnOnAll(leds, 2000);
-  int seqTemp[0];
+  turnOnAll(ledsAndButtons, 5000);
+  int seqTemp[0][2];
   sequenceLeds = seqTemp;
   sizeSequenceLeds = 0;
 }
 void setup(){
   Serial.begin(9600);
-  iniciarJogoGenius();
+  startGeniusGame();
 }
 void loop(){
-  int led = random(0,3);
-  increaseSequence(leds[led]);
-  blinkSequence(sequenceLeds, sizeSequenceLeds);
-  readBottonSequence();
+//   Serial.println("Starting loop");
+//   int ledPosition = random(0,3);
+//   Serial.println("led position");
+//   int ledButtonTemp[1][2] = {{ledsAndButtons[ledPosition][0],ledsAndButtons[ledPosition][1]}};
+// Serial.println("increasing sequence with led  ");
+//   Serial.println(ledButtonTemp[0][0] );
+//   increaseSequence(ledButtonTemp);
+//   Serial.println("Blik the new sequence");
+//   blinkSequence(sequenceLeds, sizeSequenceLeds);
+//   // readBottonSequence();
 }
