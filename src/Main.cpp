@@ -19,7 +19,7 @@ int bottons[4] = {BOTTON_YELLOW,BOTTON_RED,BOTTON_GREEN,BOTTON_WHITE};
 
 // int ledNow;
 void readBottonSequence(){
-  
+  //TODO Implements 
 }
 
 void blink(int led, int delayy){
