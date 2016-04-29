@@ -15,8 +15,9 @@ int ledsAndButtons[4][2]={{LED_YELLOW,BOTTON_YELLOW},
                           {LED_RED   ,BOTTON_RED   },
                           {LED_GREEN ,BOTTON_GREEN },
                           {LED_WHITE ,BOTTON_WHITE }};
-int sizeSequenceLeds;
-int (*sequenceLeds)[2];
+int sizeSequence;
+int *sequenceLeds;
+int *sequenceButtons;
 
 
 int bottons[4] = {BOTTON_YELLOW,BOTTON_RED,BOTTON_GREEN,BOTTON_WHITE};
@@ -64,19 +65,22 @@ void startGeniusGame(){
   startExitPorts(ledsAndButtons);
 //  Serial.println("Starting Enter ports");
   startEntrancePorts(ledsAndButtons);
-  sizeSequenceLeds =0;
+  sizeSequence =0;
 
 }
 void increaseSequence(int novoLedButton[1][2]){
-  Serial.println("Creating new Array of sequence leds");
+  Serial.println("Creating new sequence size");
+  Serial.println(sizeSequence+1);
+  Serial.println("\n");
   delay(1000);
-  int seqTemp[sizeSequenceLeds][2] ;
+  int *ledSeqTemp = new int [sizeSequence+1];
+  int *buttonSeqTemp= new int[sizeSequence+1];
  
-  for(int i = 0 ; i<=sizeSequenceLeds;i++){
+  for(int i = 0 ; i<=sizeSequence;i++){
     
-    if(i==sizeSequenceLeds){
-      seqTemp[i][0] = novoLedButton[0][0];
-      seqTemp[i][1] = novoLedButton[0][1];
+    if(i==sizeSequence){
+      ledSeqTemp[i] = novoLedButton[0][0];
+      buttonSeqTemp[i] = novoLedButton[0][1];
       
       Serial.println("Adding new led to the sequence");
       Serial.println(novoLedButton[0][0]);
@@ -84,14 +88,17 @@ void increaseSequence(int novoLedButton[1][2]){
       break;
     }else{
       Serial.println("Adding old led to the sequence");
-      Serial.println(sequenceLeds[i][0]);
-      seqTemp[i][0] = sequenceLeds[i][0];
-      seqTemp[i][1] = sequenceLeds[i][1];
+      Serial.println(sequenceLeds[i]);
+      ledSeqTemp[i] = sequenceLeds[i];
+      buttonSeqTemp[i] = sequenceButtons[i];
     }
   }
-  sequenceLeds = seqTemp;
-  sizeSequenceLeds++;
-  delay(5000);
+  sequenceLeds = ledSeqTemp;
+  sequenceButtons = buttonSeqTemp;
+  sizeSequence++;
+  delete [] ledSeqTemp;
+  delete [] buttonSeqTemp;
+  delay(2000);
 }
 void blinkSequence(int (*seq)[2],int sizeSeq){
   for(int i=0; i<sizeSeq;i++){
@@ -110,19 +117,20 @@ void loop(){
   Serial.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
   Serial.println("Starting loop");
   Serial.println("Size of sequence led");
-  Serial.println(sizeSequenceLeds);
+  Serial.println(sizeSequence);
   int randomNumber = random(0,3);
   Serial.println("Randomic Number");
   Serial.println(randomNumber);
+  Serial.println("\n");
   int ledTemp = ledsAndButtons[randomNumber][0];
   int buttonTemp = ledsAndButtons[randomNumber][1];
   int ledButtonTemp[1][2] = {{ledTemp,buttonTemp}};
   // Serial.println("increasing sequence with led  ");
   // Serial.println(ledButtonTemp[0][0] );
   increaseSequence(ledButtonTemp);
-  delay(3000);
+  delay(1000);
 //   Serial.println("Blik the new sequence");
-//   blinkSequence(sequenceLeds, sizeSequenceLeds);
+//   blinkSequence(sequenceLeds, sizeSequence);
 //   // readBottonSequence();
 }
 
