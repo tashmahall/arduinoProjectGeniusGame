@@ -79,13 +79,10 @@ void increaseSequence(int novoLedButton[1][2]){
   for(int i = 0 ; i<=sizeSequence;i++){
     
     if(i==sizeSequence){
-      ledSeqTemp[i] = novoLedButton[0][0];
-      buttonSeqTemp[i] = novoLedButton[0][1];
-      
       Serial.println("Adding new led to the sequence");
       Serial.println(novoLedButton[0][0]);
-      delay(2000);
-      break;
+      ledSeqTemp[i] = novoLedButton[0][0];
+      buttonSeqTemp[i] = novoLedButton[0][1];
     }else{
       Serial.println("Adding old led to the sequence");
       Serial.println(sequenceLeds[i]);
