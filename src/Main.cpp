@@ -169,7 +169,7 @@ void loop(){
   Serial.println("Starting loop");
   Serial.println("Size of sequence led");
   Serial.println(sizeSequence);
-  int randomNumber = random(0,3);
+  int randomNumber = random(0,4);
   // Serial.println("Randomic Number");
   // Serial.println(randomNumber);
   // Serial.println("\n");
