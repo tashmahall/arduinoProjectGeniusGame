@@ -24,9 +24,7 @@ int *sequenceButtons;
 int bottons[4] = {BOTTON_YELLOW,BOTTON_RED,BOTTON_GREEN,BOTTON_WHITE};
 
 // int ledNow;
-void readBottonSequence(){
-  //TODO Implements
-}
+
 void translateLed(int led){
   Serial.println(led);
   switch(led){
@@ -107,6 +105,25 @@ void startGeniusGame(){
   sizeSequence =0;
 
 }
+int discoveringButtonPressed(){
+  for (int i=LED_YELLOW ; i<=LED_WHITE ; i++){
+    int reading = digitalRead(i);
+    Serial.println("Reading of the Button pressed");
+    Serial.println(reading);
+    if (reading !=1){
+      Serial.println("Returnin button");
+      translateButton(i);
+      return i;
+    }
+  }
+}
+void readBottonSequence(int seqLed[], int seqButton[], int sizeSeq){
+  for (int i = 0 ; i<sizeSeq ; i++){
+
+
+  }
+}
+
 void increaseSequence(int novoLedButton[][2], int *&seqLed, int *&seqButton, int* sizeSeq){
   int newSize = (*sizeSeq+1)*sizeof(int);
   void * newArrayLed = malloc ( newSize );
@@ -182,6 +199,7 @@ void loop(){
   // Serial.println("increasing sequence with led  ");
   // Serial.println(ledButtonTemp[0][0] );
   increaseSequence(ledButtonTemp, sequenceLeds, sequenceButtons, &sizeSequence);
+  discoveringButtonPressed();
   // delay(1000);
 //   Serial.println("Blik the new sequence");
   blinkSequence(sequenceLeds, sizeSequence);
