@@ -4,7 +4,7 @@
 #define LED_RED 4
 #define LED_GREEN 5
 #define LED_WHITE 6
-#define HALF_MINUTE 500
+#define HALF_SECOND 500
 
 #define BOTTON_YELLOW 10
 #define BOTTON_RED  11
@@ -15,9 +15,10 @@ int ledsAndButtons[4][2]={{LED_YELLOW,BOTTON_YELLOW},
                           {LED_RED   ,BOTTON_RED   },
                           {LED_GREEN ,BOTTON_GREEN },
                           {LED_WHITE ,BOTTON_WHITE }};
-int sizeSequence;
+int sizeSequence = 0;
 int *sequenceLeds;
 int *sequenceButtons;
+
 
 
 int bottons[4] = {BOTTON_YELLOW,BOTTON_RED,BOTTON_GREEN,BOTTON_WHITE};
@@ -25,6 +26,44 @@ int bottons[4] = {BOTTON_YELLOW,BOTTON_RED,BOTTON_GREEN,BOTTON_WHITE};
 // int ledNow;
 void readBottonSequence(){
   //TODO Implements
+}
+void translateLed(int led){
+  Serial.println(led);
+  switch(led){
+    case 3:
+      Serial.println("LED_YELLOW");
+      break;
+    case 4:
+      Serial.println("LED_RED");
+      break;
+    case 5:
+      Serial.println("LED_GREEN");
+      break;
+    case 6:
+      Serial.println("LED_WHITE");
+      break;
+    default:
+      Serial.println("Number unrecognized");
+  }
+}
+void translateButton(int button){
+  Serial.println(button);
+  switch(button){
+    case 10:
+      Serial.println("BOTTON_YELLOW");
+      break;
+    case 11:
+      Serial.println("BOTTON_RED");
+      break;
+    case 12:
+      Serial.println("BOTTON_GREEN");
+      break;
+    case 13:
+      Serial.println("BOTTON_WHITE");
+      break;
+    default:
+      Serial.println("Number unrecognized");
+  }
 }
 
 void blink(int led, int delayy){
@@ -68,39 +107,54 @@ void startGeniusGame(){
   sizeSequence =0;
 
 }
-void increaseSequence(int novoLedButton[1][2]){
+void increaseSequence(int novoLedButton[][2], int *&seqLed, int *&seqButton, int* sizeSeq){
+  int newSize = (*sizeSeq+1)*sizeof(int);
+  void * newArrayLed = malloc ( newSize );
+  void * newArrayButton = malloc ( newSize );
   Serial.println("Creating new sequence size");
-  Serial.println(sizeSequence+1);
+  int sizeTemp = *sizeSeq+1;
+  Serial.println(sizeTemp);
   Serial.println("\n");
   delay(1000);
-  int *ledSeqTemp = new int [sizeSequence+1];
-  int *buttonSeqTemp= new int[sizeSequence+1];
- 
-  for(int i = 0 ; i<=sizeSequence;i++){
-    
-    if(i==sizeSequence){
-      Serial.println("Adding new led to the sequence");
-      Serial.println(novoLedButton[0][0]);
-      ledSeqTemp[i] = novoLedButton[0][0];
-      buttonSeqTemp[i] = novoLedButton[0][1];
+  for(int i = 0 ; i<=sizeTemp-1;i++){
+    ((int*)newArrayLed)[i] = 0;
+    ((int*)newArrayButton)[i] = 0;
+    if(i==sizeTemp-1){
+        int lTemp = novoLedButton[0][0];
+        int bTemp = novoLedButton[0][1];
+        ((int*)newArrayLed)[i] = lTemp;
+        ((int*)newArrayButton)[i] = bTemp;
+        Serial.println("Added new led to the sequence");
+        Serial.println(((int*)newArrayLed)[i]);
     }else{
-      Serial.println("Adding old led to the sequence");
-      Serial.println(sequenceLeds[i]);
-      ledSeqTemp[i] = sequenceLeds[i];
-      buttonSeqTemp[i] = sequenceButtons[i];
-    }
+        ((int*)newArrayButton)[i]=((int*)seqButton)[i];
+        ((int*)newArrayLed)[i]=((int*)seqLed)[i];
+        Serial.println("Added old led to the sequence");
+        Serial.println(((int*)newArrayLed)[i]);
+      }
   }
-  sequenceLeds = ledSeqTemp;
-  sequenceButtons = buttonSeqTemp;
-  sizeSequence++;
-  delete [] ledSeqTemp;
-  delete [] buttonSeqTemp;
-  delay(2000);
+  if (seqButton!=0){
+    free(seqButton);
+    free(seqLed);
+  } 
+  *sizeSeq = sizeTemp;
+  seqLed = ((int*)newArrayLed);
+  seqButton = ((int*)newArrayButton);
+  delay(1000);
 }
-void blinkSequence(int (*seq)[2],int sizeSeq){
+void blinkSequence(int seq[],int sizeSeq){
   for(int i=0; i<sizeSeq;i++){
-    blink(seq[i][0], HALF_MINUTE);
+    Serial.println("Blinking");
+    translateLed(seq[i]);
+    // delay(3000);
+    blink(seq[i], HALF_SECOND);
   }
+}
+void showLedSequence(){
+  for(int i =0; i<sizeSequence; i++){
+    translateLed(sequenceLeds[i]);
+  }
+  delay(5000);
 }
 void missedSequence(){
   turnOnAll(ledsAndButtons, 5000);
@@ -116,18 +170,25 @@ void loop(){
   Serial.println("Size of sequence led");
   Serial.println(sizeSequence);
   int randomNumber = random(0,3);
-  Serial.println("Randomic Number");
-  Serial.println(randomNumber);
-  Serial.println("\n");
+  // Serial.println("Randomic Number");
+  // Serial.println(randomNumber);
+  // Serial.println("\n");
   int ledTemp = ledsAndButtons[randomNumber][0];
   int buttonTemp = ledsAndButtons[randomNumber][1];
-  int ledButtonTemp[1][2] = {{ledTemp,buttonTemp}};
+  // int ledButtonTemp[1][2] ;= {{ledTemp,buttonTemp}};
+  int ledButtonTemp[1][2] ;
+  ledButtonTemp[0][0]=ledTemp;
+  ledButtonTemp[0][1]=buttonTemp;
   // Serial.println("increasing sequence with led  ");
   // Serial.println(ledButtonTemp[0][0] );
-  increaseSequence(ledButtonTemp);
-  delay(1000);
+  increaseSequence(ledButtonTemp, sequenceLeds, sequenceButtons, &sizeSequence);
+  // delay(1000);
 //   Serial.println("Blik the new sequence");
-//   blinkSequence(sequenceLeds, sizeSequence);
+  blinkSequence(sequenceLeds, sizeSequence);
+  showLedSequence();
 //   // readBottonSequence();
+  // ledButtonTemp[0][0]=1000000;
+  // ledButtonTemp[0][1]=1000000;
+
 }
 
