@@ -11,17 +11,18 @@
 #define BOTTON_GREEN  11
 #define BOTTON_WHITE  12
 
+#define SEED 0
+
 int ledsAndButtons[4][2]={{LED_YELLOW,BOTTON_YELLOW},
                           {LED_RED   ,BOTTON_RED   },
                           {LED_GREEN ,BOTTON_GREEN },
                           {LED_WHITE ,BOTTON_WHITE }};
+
 int sizeSequence = 0;
 int *sequenceLeds;
 int *sequenceButtons;
 
 
-
-int bottons[4] = {BOTTON_YELLOW,BOTTON_RED,BOTTON_GREEN,BOTTON_WHITE};
 
 // int ledNow;
 
@@ -218,6 +219,8 @@ void showLedSequence(){
 }
 void setup(){
   Serial.begin(9600);
+  int seed = analogRead(SEED);
+  randomSeed(seed);
   startGeniusGame();
 }
 void loop(){
